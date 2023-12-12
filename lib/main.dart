@@ -1,41 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+final Uri _googleUrl = Uri.parse('https://www.google.com/');
+final Uri _phoneCallUrl = Uri.parse('tel:+123456789');
+
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'URL Launcher App',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.pink),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: HomeScreen(),
-    );
-  }
-}
-
-class HomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+    home:Scaffold(
       backgroundColor: Colors.lime,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center, // Center the text horizontally
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               'URL Launcher',
               style: TextStyle(
-                fontSize: 45, // Larger font size
+                fontSize: 45,
                 fontWeight: FontWeight.bold,
-                fontFamily:'Ubuntu',
+                fontFamily: 'Ubuntu',
                 color: Colors.white,
               ),
             ),
@@ -43,11 +35,13 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton.icon(
-                onPressed: () => _launchUrl(context, 'https://www.google.com'),
+                onPressed: () {
+                  launchUrl(_googleUrl);
+                },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.white,
                   onPrimary: Colors.black,
-                  fixedSize: Size.fromHeight(60)
+                  fixedSize: Size.fromHeight(60),
                 ),
                 icon: Icon(Icons.open_in_browser),
                 label: Text(
@@ -60,7 +54,9 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton.icon(
-                onPressed: () => _makePhoneCall(context, '+123456789'),
+                onPressed: () {
+                  launchUrl(_phoneCallUrl);
+                },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.white,
                   onPrimary: Colors.black,
@@ -76,32 +72,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  _launchUrl(BuildContext context, String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      _showErrorSnackbar(context, 'Could not launch $url');
-    }
-  }
-
-  _makePhoneCall(BuildContext context, String phoneNumber) async {
-    if (await canLaunch('tel:$phoneNumber')) {
-      await launch('tel:$phoneNumber');
-    } else {
-      _showErrorSnackbar(context, 'Could not make a phone call to $phoneNumber');
-    }
-  }
-
-  _showErrorSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: Duration(seconds: 3),
-        backgroundColor: Colors.red,
-      ),
+    ),
     );
   }
 }
